@@ -70,8 +70,8 @@ export default function Home() {
               Expancoov Project Portal
             </div>
             <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
-              すべてのツールと、<br />
-              コアな技術をここに集約。
+              すべてのgayと、<br />
+              コアなアナル技術をここに集約！。
             </h1>
             <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
               EmulatorJSの思想を受け継いだ、ブラウザ完結型の総合開発プラットフォーム。
