@@ -31,7 +31,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* 左側：ロゴ */}
           <a href="/" className="text-lg font-black tracking-widest uppercase">
-            Expancoov <span className="text-blue-600">group</span>
+            Expancoov <span className="text-blue-600">group</span>SCGP
           </a>
 
           {/* 右側：指定通りのメニュー配置 */}
