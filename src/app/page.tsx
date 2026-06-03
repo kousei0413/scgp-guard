@@ -79,10 +79,15 @@ export default function Home() {
             <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
 　　　　　　　　（セミ兄貴による演奏）
 ん～ いいときには結構いくね - 田所
+              
 へ～ - 遠野
+              
 結構楽だったよ - 田所
+              
 こ↑こ↓ - 田所
+              
 はえ～・・・すっごいおっきい・・・ - 遠野
+              
 ｶﾞｯｺﾁｬｯ ﾎﾟﾝ - ドアくん
 入って、どうぞ - 田所
 お邪魔しまーす - 遠野
