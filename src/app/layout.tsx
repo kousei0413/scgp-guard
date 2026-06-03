@@ -14,14 +14,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="bg-white text-gray-900 antialiased font-sans">
-        {/* ヘッダーはロゴのみ（メニューはpage.tsx側で上部に絶対配置します） */}
-        <nav className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="/" className="text-lg font-black tracking-widest uppercase">
-              Expancoov <span className="text-blue-600">group</span>
-            </a>
-          </div>
-        </nav>
         {children}
       </body>
     </html>
