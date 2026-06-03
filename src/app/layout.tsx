@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ポータルハブ",
+  title: "Expancoov group",
   description: "総合開発・コミュニティプラットフォーム",
 };
 
@@ -13,20 +13,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className="bg-gray-950 text-gray-100 antialiased font-sans">
-        {/* 全ページ共通のナビゲーションバー */}
-        <nav className="border-b border-gray-800 bg-gray-900/50 backdrop-blur sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <a href="/" className="text-xl font-black tracking-wider text-white hover:opacity-80">
-                PORTAL<span className="text-blue-500">.JS</span>
+      <body className="bg-white text-gray-900 antialiased font-sans">
+        {/* ナビゲーションバー */}
+        <nav className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div>
+              <a href="/" className="text-lg font-black tracking-widest uppercase hover:opacity-75 transition-opacity">
+                Expancoov <span className="text-blue-600">group</span>
               </a>
             </div>
-            <div className="flex items-center gap-4 text-sm font-medium text-gray-400">
-              <a href="/directory" className="hover:text-white transition-colors">ツール一覧</a>
-              <a href="/emulator" className="hover:text-white transition-colors">エミュレータ</a>
-              <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-gray-800 text-white hover:bg-gray-700 transition-colors">
-                Discord
+            {/* 各機能を「〇〇 ◀」の形式で右側に集約 */}
+            <div className="flex items-center gap-6 text-xs font-bold tracking-wider uppercase text-gray-500">
+              <a href="/directory" className="hover:text-gray-900 transition-colors flex items-center gap-1">
+                ツール一覧 <span className="text-blue-600 text-[10px]">◀</span>
+              </a>
+              <a href="/emulator" className="hover:text-gray-900 transition-colors flex items-center gap-1">
+                エミュレータ <span className="text-purple-600 text-[10px]">◀</span>
+              </a>
+              <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors flex items-center gap-1">
+                Discord <span className="text-emerald-600 text-[10px]">◀</span>
               </a>
             </div>
           </div>
