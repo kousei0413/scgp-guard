@@ -70,14 +70,19 @@ export default function Home() {
               Expancoov Project Portal
             </div>
             <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
-              coming soon、<br />
+              SCGP、<br />
               
             </h1>
             <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
-              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+              node.jsなどを用いたコードを開発、shadowcompnyaddonのガンパックを開発している組織です
             </p>
             <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
-　　　　　　　　えぇがちかよ by ramune
+　　　　　　　　【お知らせ】
+              ガンパックをスキンパックだと一部の人が誤解しているようです、
+              ガンパックはscaddonに新たな銃機を追加するもので、スキンパックはまた別のものです。
+            </p>
+            <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
+　　　　　　　　
             </p>
           </div>
 
@@ -105,7 +110,7 @@ export default function Home() {
               {/* エミュレータ */}
               {openMenu === 'emulator' && (
                 <div className="space-y-4">
-                  <div className="text-xs font-bold text-purple-600 tracking-wider uppercase mb-2">▼ エミュレータモジュール</div>
+                  <div className="text-xs font-bold text-purple-600 tracking-wider uppercase mb-2">▼ エミュモジュール</div>
                   <div className="pl-4 border-l-2 border-purple-500/30 space-y-4">
                     {EMULATOR_ITEMS.map(item => (
                       <div key={item.id}>
