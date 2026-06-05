@@ -49,7 +49,7 @@ export default function Home() {
               エミュレータ {openMenu === 'emulator' ? <span className="text-purple-600 text-[10px]">▼</span> : <span className="text-purple-600 text-[10px]">◀</span>}
             </button>
             <a 
-              href="https://discord.gg" 
+              href="https://discord.gg/2W9gNv8ep9" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="hover:text-gray-900 transition-colors flex items-center gap-1 text-gray-500"
