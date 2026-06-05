@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 
 const DIRECTORY_ITEMS = [
-  { id: "1", title: "VRChatアバター最適化ツール", desc: "ポリゴン数やボーン構造を自動チェックし負荷を軽減。", url: "https://example.com" },
+  { id: "1", title: "あああ", desc: "ポリゴン数やボーン構造を自動チェックし負荷を軽減開発中。", url: "https://example.com" },
   { id: "2", title: "技術系コミュニティサーバー", desc: "進捗報告や技術的な質問、情報共有ができるDiscord。", url: "https://discord.gg" }
 ];
 
 const EMULATOR_ITEMS = [
-  { id: "e1", title: "EmulatorJS Core", desc: "ブラウザ完結型のレトロゲームエミュレータ環境。", url: "https://example.com" },
-  { id: "e2", title: "ROM Extension Tester", desc: "各種ゲームファイルの拡張子互換性を検証するツール。", url: "https://example.com" }
+  { id: "e1", title: "EmulatorJS Core", desc: "ejsツール。", url: "https://example.com" },
+  { id: "e2", title: "ROM Extension Tester", desc: "拡張子互換性検証（開発中）。", url: "https://example.com" }
 ];
 
 export default function Home() {
