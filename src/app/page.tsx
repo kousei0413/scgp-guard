@@ -77,7 +77,7 @@ export default function Home() {
               node.jsなどを用いたコードを開発、shadowcompnyaddonのガンパックを開発している組織です
             </p>
             <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
-　　　　　　　　【お知らせ】
+　　【お知らせ】
               ガンパックをスキンパックだと一部の人が誤解しているようです、
               ガンパックはscaddonに新たな銃機を追加するもので、スキンパックはまた別のものです。
             </p>
