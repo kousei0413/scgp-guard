@@ -66,7 +66,7 @@ export default function Home() {
         {/* 🧭 左サイドバー（項目名はすべてtest） */}
         <aside className="w-40 bg-red-600 text-yellow-200 p-6 flex flex-col gap-2 border-r border-yellow-200 min-h-[calc(100vh-4rem)]">
           <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">test</div>
-          <a href="/test" className="p-2 rounded hover:bg-zinc-700 transition">🧪 test</a>
+          <a href="/test" className="p-2 rounded hover:bg-zinc-700 transition">ramuneとは</a>
           <a href="/test" className="p-2 rounded hover:bg-zinc-700 transition">🧪 test</a>
           <a href="/test" className="p-2 rounded hover:bg-zinc-700 transition">🧪 test</a>
         </aside>
