@@ -27,7 +27,7 @@ export default function Home() {
     <div className="min-h-screen bg-white flex flex-col">
       
       {/* 1. ナビゲーションバー画面最上部 */}
-      <nav className="border-b border-gray-100 bg-red-600/80 backdrop-blur sticky top-0 z-50 w-full">
+      <nav className="border-b border-gray-100 bg-red-700 backdrop-blur sticky top-0 z-50 w-full">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* 左側：ロゴ */}
           <a href="/" className="text-yellow-300 font-black tracking-widest uppercase">
