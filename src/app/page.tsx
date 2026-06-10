@@ -38,13 +38,13 @@ export default function Home() {
           <div className="flex items-center gap-6 text-xs font-bold tracking-wider uppercase">
             <button 
               onClick={() => toggleMenu('directory')}
-              className="hover:text-gray-900 transition-colors flex items-center gap-1 focus:outline-none text-gray-500"
+              className="hover:text-yellow-600 transition-colors flex items-center gap-1 focus:outline-none text-gray-500"
             >
               ツール一覧 {openMenu === 'directory' ? <span className="text-blue-600 text-[10px]">▼</span> : <span className="text-blue-600 text-[10px]">◀</span>}
             </button>
             <button 
               onClick={() => toggleMenu('emulator')}
-              className="hover:text-gray-900 transition-colors flex items-center gap-1 focus:outline-none text-gray-500"
+              className="hover:text-yellow-600 transition-colors flex items-center gap-1 focus:outline-none text-gray-500"
             >
               エミュレータ {openMenu === 'emulator' ? <span className="text-purple-600 text-[10px]">▼</span> : <span className="text-purple-600 text-[10px]">◀</span>}
             </button>
@@ -52,7 +52,7 @@ export default function Home() {
               href="https://discord.gg/2W9gNv8ep9" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="hover:text-gray-900 transition-colors flex items-center gap-1 text-gray-500"
+              className="hover:text-yellow-600 transition-colors flex items-center gap-1 text-gray-500"
             >
               Discord <span className="text-emerald-600 text-[10px]">◀</span>
             </a>
