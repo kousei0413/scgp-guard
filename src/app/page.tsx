@@ -40,19 +40,19 @@ export default function Home() {
               onClick={() => toggleMenu('directory')}
               className="hover:text-gray-900 transition-colors flex items-center gap-1 focus:outline-none text-gray-500"
             >
-              ツール一覧 {openMenu === 'directory' ? <span className="text-yellow-500 text-[10px]">▼</span> : <span className="text-blue-600 text-[10px]">◀</span>}
+              ツール一覧 {openMenu === 'directory' ? <span className="text-blue-600 text-[10px]">▼</span> : <span className="text-blue-600 text-[10px]">◀</span>}
             </button>
             <button 
               onClick={() => toggleMenu('emulator')}
               className="hover:text-gray-900 transition-colors flex items-center gap-1 focus:outline-none text-gray-500"
             >
-              エミュレータ {openMenu === 'emulator' ? <span className="text-yellow-600 text-[10px]">▼</span> : <span className="text-purple-600 text-[10px]">◀</span>}
+              エミュレータ {openMenu === 'emulator' ? <span className="text-purple-600 text-[10px]">▼</span> : <span className="text-purple-600 text-[10px]">◀</span>}
             </button>
             <a 
               href="https://discord.gg/2W9gNv8ep9" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="hover:text-yellow-700 transition-colors flex items-center gap-1 text-gray-500"
+              className="hover:text-gray-900 transition-colors flex items-center gap-1 text-gray-500"
             >
               Discord <span className="text-emerald-600 text-[10px]">◀</span>
             </a>
