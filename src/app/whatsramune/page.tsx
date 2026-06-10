@@ -13,17 +13,23 @@ export default function Home() {
         </div>
         
         <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
-          SCGP、<br />
+          キチガイ検知！<br />
         </h1>
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
-          node.jsなどを用いたコードを開発、shadowcompnyaddonのガンパックを開発している組織です
+          ramuneとはShadow Garden Officialに頻繫に出没するキチガイ（変質者）です、彼はモデレーター権限を乱用して都合の悪いメッセージをひたすら削除します、
+          なのに正義感（見せかけ）だけは一人前です、
+  
         </p>
+        <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
+          彼はscgpを乗っ取ろうとしています
+  
+        </p>
+        
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
           【お知らせ】<br />
-          ガンパックをスキンパックだと一部の人が誤解しているようです、<br />
-          ガンパックはscaddonに新たな銃機を追加するもので、スキンパックはまた別のものです。
+          ramuneがocasanをtoしました。
         </p>
       </div>
 
