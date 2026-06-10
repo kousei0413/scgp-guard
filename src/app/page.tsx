@@ -32,15 +32,8 @@ export default function Home() {
           onClick={() => toggleMenu('directory')}
           className="text-blue-600 hover:underline flex items-center gap-1"
         >
-          ツール一覧 {openMenu === 'directory' ? '▼' : '◀'}
-        </button>
-        <button 
-          onClick={() => toggleMenu('module')}
-          className="text-purple-600 hover:underline flex items-center gap-1"
-        >
-          エミュレータ（モジュール） {openMenu === 'module' ? '▼' : '◀'}
-        </button>
-      </div>
+         
+          
 
       {/* タイポグラフィ（文字データ） */}
       <div className="space-y-6">
@@ -64,36 +57,9 @@ export default function Home() {
       {(openMenu === 'directory' || openMenu === 'module') && (
         <div className="border-t border-gray-100 pt-8">
           
-          {/* ツール一覧 */}
-          {openMenu === 'directory' && (
-            <div className="space-y-4">
-              <div className="text-xs font-bold text-blue-600 tracking-wider uppercase mb-2">▼ ツール一覧</div>
-              <div className="pl-4 border-l-2 border-blue-500/30 space-y-4">
-                {DIRECTORY_ITEMS.map(item => (
-                  <div key={item.id}>
-                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-bold text-gray-900 hover:text-blue-600 transition-colors block text-base">
-                      {item.title}
-                    </a>
-                    <p className="text-gray-500 text-xs mt-1">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          
 
-          {/* エミュレータ（隠語: module） */}
-          {openMenu === 'module' && (
-            <div className="space-y-4">
-              <div className="text-xs font-bold text-purple-600 tracking-wider uppercase mb-2">▼ エミュモジュール</div>
-              <div className="pl-4 border-l-2 border-purple-500/30 space-y-4">
-                {MODULE_ITEMS.map(item => (
-                  <div key={item.id}>
-                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-bold text-gray-900 hover:text-purple-600 transition-colors block text-base">
-                      {item.title}
-                    </a>
-                    <p className="text-gray-500 text-xs mt-1">{item.desc}</p>
-                  </div>
-                ))}
+         
               </div>
             </div>
           )}
