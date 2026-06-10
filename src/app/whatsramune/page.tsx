@@ -12,7 +12,7 @@ export default function Home() {
           Expancoov Project Portal
         </div>
         
-        <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
+        <h1 className="text-4xl sm:text-6xl font-red-600 text-gray-950 tracking-tight leading-tight">
           キチガイ検知！<br />
         </h1>
         
