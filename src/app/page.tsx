@@ -64,7 +64,7 @@ export default function Home() {
       <div className="flex flex-1 w-full">
         
         {/* 🧭 左サイドバー（項目名はすべてtest） */}
-        <aside className="w-56 bg-zinc-800 text-slate-200 p-6 flex flex-col gap-2 border-r border-zinc-700 min-h-[calc(100vh-4rem)]">
+        <aside className="w-40 bg-zinc-800 text-slate-200 p-6 flex flex-col gap-2 border-r border-zinc-700 min-h-[calc(100vh-4rem)]">
           <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">test</div>
           <a href="/test" className="p-2 rounded hover:bg-zinc-700 transition">🧪 test</a>
           <a href="/test" className="p-2 rounded hover:bg-zinc-700 transition">🧪 test</a>
