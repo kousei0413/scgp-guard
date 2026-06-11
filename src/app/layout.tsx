@@ -28,7 +28,7 @@ export default function RootLayout({
             </a>
 
             {/* 右側：🎴 Discord 画像製ボタン（黒背景と枠線を撤去し、素のまま配置） */}
-            <div className="h-full py-2 flex items-center">
+            <div className="w-[50px] h-[50px] flex items-center">
               <a 
                 href="https://discord.gg/2W9gNv8ep9" 
                 target="_blank" 
