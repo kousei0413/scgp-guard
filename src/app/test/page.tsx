@@ -13,7 +13,7 @@ export default function Home() {
         </div>
         
         <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
-          こちらはテストページです、引き返してください<br />
+          こちらはテストページです、 引き返してください<br />
         </h1>
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
