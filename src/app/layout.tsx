@@ -27,7 +27,7 @@ export default function RootLayout({
               Expancoov <span className="text-yellow-300">group SCGP ☭</span>
             </a>
 
-            {/* 右側：🎴 Discord 画像製ボタン（黒背景と枠線を撤去し、素のまま配置） */}
+            {/* 右側：🎴 dc 画像製ボタン（黒背景と枠線を撤去し、素のまま配置） */}
             <div className="h-full py-2 flex items-center">
               <a 
                 href="https://discord.gg/2W9gNv8ep9" 
