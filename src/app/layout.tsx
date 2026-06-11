@@ -25,26 +25,43 @@ export default function RootLayout({
             <a href="/" className="text-yellow-300 font-black tracking-widest uppercase">
               Expancoov <span className="text-yellow-300">group SCGP ☭</span>
             </a>
-
-            {/* 右側：共通リンク（※ヘッダー開閉は非推奨のためシンプルな静的配置、または必要に応じてクライアントコンポーネント化） */}
-            <div className="flex items-center gap-6 text-xs font-bold tracking-wider uppercase text-yellow-200">
-              <a href="https://discord.gg/2W9gNv8ep9" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-600 transition-colors">
-                Discord <span className="text-emerald-600 text-[10px]">◀</span>
-              </a>
-            </div>
           </div>
         </nav>
 
         {/* ─── 横並びレイアウトの開始 ─── */}
         <div className="flex flex-1 w-full">
           
-          {/* 🧭 【共通枠】左サイドバー（一度書けば全ページで維持される） */}
-          <aside className="w-40 bg-red-600 text-yellow-200 p-6 flex flex-col gap-2 border-r border-yellow-200 min-h-[calc(100vh-4rem)]">
-            <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">test</div>
-            {/* 🔗 飛ばす先URLは href="..." の中でそれぞれ設定 */}
-            <a href="/whatsramune" className="p-2 rounded hover:bg-red-500 transition">ramuneとは</a>
-            <a href="/test" className="p-2 rounded hover:bg-red-500 transition">🧪 test</a>
-            <a href="/test" className="p-2 rounded hover:bg-red-500 transition">🧪 test</a>
+          {/* 🧭 【共通枠】左サイドバー */}
+          <aside className="w-40 bg-red-600 text-yellow-200 p-4 flex flex-col justify-between border-r border-yellow-200 min-h-[calc(100vh-4rem)]">
+            
+            {/* 上側：メニューリンク群 */}
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-bold text-red-300 uppercase tracking-wider mb-2">test</div>
+              <a href="/whatsramune" className="p-2 rounded hover:bg-red-500 transition text-sm">ramuneとは</a>
+              <a href="/test" className="p-2 rounded hover:bg-red-500 transition text-sm">🧪 test</a>
+              <a href="/test" className="p-2 rounded hover:bg-red-500 transition text-sm">🧪 test</a>
+            </div>
+
+            {/* 下側：🎴 Discord 画像製ボタン */}
+            <div className="mt-auto pt-4 border-t border-red-500/50">
+              <a 
+                href="https://discord.gg/2W9gNv8ep9" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="group relative block w-full aspect-[4/3] rounded-lg overflow-hidden bg-zinc-950 border border-yellow-200/40 shadow-md transition-all duration-300 hover:scale-[1.03] hover:border-yellow-300"
+              >
+                {/* 🔒 変更点：コメントアウトを解除し、パスを /dlogo.png に修正 */}
+                <img 
+                  src="/dlogo.png" 
+                  alt="Discord" 
+                  className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                /> 
+                
+                {/* 画像がホバーされた時にフワッと浮かび上がるオーバーレイ装飾（高級感アップ） */}
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-300"></div>
+              </a>
+            </div>
+
           </aside>
 
           {/* 📝 メインコンテンツ（ここに各ページの中身が自動的にはめ込まれる） */}
