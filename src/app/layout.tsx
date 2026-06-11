@@ -43,8 +43,8 @@ export default function RootLayout({
             <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">test</div>
             {/* 🔗 飛ばす先URLは href="..." の中でそれぞれ設定 */}
             <a href="/whatsramune" className="p-2 rounded hover:bg-red-500 transition">ramuneとは</a>
-            <a href="/test2" className="p-2 rounded hover:bg-red-500 transition">🧪 test</a>
-            <a href="/test3" className="p-2 rounded hover:bg-red-500 transition">🧪 test</a>
+            <a href="/test" className="p-2 rounded hover:bg-red-500 transition">🧪 test</a>
+            <a href="/test" className="p-2 rounded hover:bg-red-500 transition">🧪 test</a>
           </aside>
 
           {/* 📝 メインコンテンツ（ここに各ページの中身が自動的にはめ込まれる） */}
