@@ -9,22 +9,19 @@ export default function Home() {
       {/* タイポグラフィ（組織概要・お知らせの文字データのみに集約） */}
       <div className="space-y-6">
         <div className="text-xs font-bold tracking-widest text-blue-600 uppercase">
-          Expancoov Project Portal
+         
         </div>
         
-        <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
-          SCGP、<br />
+        <h1 className="text-4xl sm:text-6xl font-black text-red-550 tracking-tight leading-tight">
+          こちらはテストページです、引き返してください<br />
         </h1>
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
-          node.jsなどを用いたコードを開発、shadowcompnyaddonのガンパックを開発している組織です
+          
         </p>
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
-          【お知らせ】<br />
-          ガンパックをスキンパックだと一部の人が誤解しているようです、<br />
-          ガンパックはscaddonに新たな銃機を追加するもので、スキンパックはまた別のものです。
-        </p>
+          
       </div>
 
     </div>
