@@ -17,6 +17,7 @@ export default function Home() {
         </h1>
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
           m1911 model
+           </p>
           <img 
   src="/m1911.png" 
   alt="m1911" 
@@ -26,7 +27,7 @@ export default function Home() {
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
           モーゼルc96モデル
-        </p>
+       
         <img 
   src="/c96.png" 
   alt="モーゼルc96" 
