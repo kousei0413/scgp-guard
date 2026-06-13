@@ -20,7 +20,7 @@ export default function Home() {
           m1911model
         </p>
         <img 
-  src="/m1911" 
+  src="/m1911.png" 
   alt="m1911" 
   className="w-[300px] h-auto rounded-lg shadow-md" />
         
