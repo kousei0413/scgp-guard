@@ -15,6 +15,12 @@ export default function Home() {
         <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
           SCGP、開発進捗<br />
         </h1>
+        <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
+          m1911 model
+          <img 
+  src="/m1911.png" 
+  alt="m1911" 
+  className="w-[300px] h-auto rounded-lg shadow-md" />
         
         <hr className="border-gray-250 my-6" />
         
