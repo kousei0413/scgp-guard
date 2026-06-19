@@ -15,11 +15,13 @@ export default function UniversalDevSandbox() {
     try {
       setExecutionStatus('URL構造の正規化を開始...');
       
+      // 末尾のスラッシュを自動補完
       const normalizedBase = targetBaseUrl.endsWith('/') ? targetBaseUrl : `${targetBaseUrl}/`;
-      const injectionUrl = `${normalizedBase}emulator.js`;
+      const injectionUrl = `${normalizedBase}index.html`;
       
-      setExecutionStatus(`ノード [${normalizedBase}] からアセットをマウント中...`);
+      setExecutionStatus(`ノード [${normalizedBase}] からフレームをマウント中...`);
 
+      // 画面全体を覆うレイヤー
       const viewLayer = document.createElement('div');
       viewLayer.id = 'game-holder'; 
       viewLayer.style.position = 'fixed';
@@ -29,27 +31,25 @@ export default function UniversalDevSandbox() {
       viewLayer.style.height = '100vh';
       viewLayer.style.zIndex = '99999'; 
       viewLayer.style.backgroundColor = '#000';
-      document.body.appendChild(viewLayer);
 
-      const script = document.createElement('script');
-      script.src = injectionUrl;
+      // index.htmlを直接全画面で埋め込むためのiframeを生成
+      const frame = document.createElement('iframe');
+      frame.src = injectionUrl;
+      frame.style.width = '100%';
+      frame.style.height = '100%';
+      frame.style.border = 'none';
       
-      script.onload = () => {
-        setExecutionStatus('マウント完了。メインプロセスを開始します。');
-        
-        (window as any).EmuJS = {
-          EmuJSRoot: `${normalizedBase}data/`,
-          gameUrl: `${normalizedBase}sf3_rom.dat`,
-          startOnLoaded: true
-        };
+      frame.onload = () => {
+        setExecutionStatus('マウント完了。メインプロセスを展開しました。');
       };
       
-      script.onerror = () => {
+      frame.onerror = () => {
         setExecutionStatus('エラー: アセットの取得に失敗しました。パスを確認してください。');
         viewLayer.remove();
       };
       
-      document.head.appendChild(script);
+      viewLayer.appendChild(frame);
+      document.body.appendChild(viewLayer);
 
     } catch (error) {
       setExecutionStatus('システムエラーが発生しました。');
