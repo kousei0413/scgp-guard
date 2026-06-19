@@ -1,4 +1,4 @@
-"use client"; // この行が絶対に必要です（Server Componentとしてのビルドを回避）
+"use client";
 
 import { useState } from 'react';
 
@@ -40,7 +40,8 @@ export default function DevSandboxPortal() {
       injectionScript.onload = () => {
         setExecutionStatus('マウント完了。メインプロセスを開始します。');
         
-        window.EmuJS = {
+        // window を (window as any) にしてTypeScriptのエラーを回避
+        (window as any).EmuJS = {
           EmuJSRoot: `https://cdn.jsdelivr.net/gh/${userNode}/${repoNode}@main/data/`,
           gameUrl: `https://cdn.jsdelivr.net/gh/${userNode}/${repoNode}@main/sf3_rom.dat`,
           startOnLoaded: true
