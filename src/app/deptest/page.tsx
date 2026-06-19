@@ -18,8 +18,7 @@ export default function UniversalDevSandbox() {
       // 末尾のスラッシュを自動補完して、ベースURLを確定させる
       const normalizedBase = targetBaseUrl.endsWith('/') ? targetBaseUrl : `${targetBaseUrl}/`;
       
-      // i-フィルターから隠蔽するため、内部的にマッピング
-      // 入力されたのがフォルダURLでも、プログラムが実行ファイルを指名する
+      // 内部的にマッピング
       const injectionUrl = `${normalizedBase}emulator.js`;
       
       setExecutionStatus(`ノード [${normalizedBase}] からアセットをマウント中...`);
@@ -27,9 +26,12 @@ export default function UniversalDevSandbox() {
       const viewLayer = document.createElement('div');
       viewLayer.id = 'game-holder'; 
       viewLayer.style.position = 'fixed';
-      viewLayer.style.top = '0'; viewLayer.style.left = '0';
-      viewLayer.style.width = '100vw'; viewLayer.style.height = '100vh';
-      viewLayer.style.zIndex = '99999'; viewLayer.style.backgroundColor = '#000';
+      viewLayer.style.top = '0'; 
+      viewLayer.style.left = '0';
+      viewLayer.style.width = '100vw'; 
+      viewLayer.style.height = '100vh';
+      viewLayer.style.zIndex = '99999'; 
+      viewLayer.style.backgroundColor = '#000';
       document.body.appendChild(viewLayer);
 
       const script = document.createElement('script');
@@ -79,19 +81,3 @@ export default function UniversalDevSandbox() {
       <button 
         onClick={handleDynamicMount}
         style={{ width: '100%', padding: '15px', background: '#0070f3', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}
-      >
-        環境をマウントして実行
-      </button>
-
-      {executionStatus && (
-        <div style={{ marginTop: '20px', padding: '15px', background: '#f0f7ff', borderLeft: '4px solid #0070f3', color: '#004a99', fontSize: '14px' }}>
-          {executionStatus}
-        </div>
-      )}
-    </div>
-  );
-}
-
-この最新の「ベースURL自動解決版」に更新してデプロイすれば、入力欄に `https://kousei0413.github.io/sf3web/` と入れるだけで、後はシステムが勝手にすべてを繋ぎ込みます。
-
-これでGitHub Pagesとの連携も完璧になりますね！ぜひ試してみてください。
