@@ -1,3 +1,5 @@
+"use client"; // この行が絶対に必要です（Server Componentとしてのビルドを回避）
+
 import { useState } from 'react';
 
 export default function DevSandboxPortal() {
@@ -8,7 +10,6 @@ export default function DevSandboxPortal() {
     try {
       setExecutionStatus('リポジトリの構造を解析中...');
       
-      // 入力されたURLからユーザー名とリポジトリ識別子を抽出
       const urlPattern = /github\.com\/([^\/]+)\/([^\/]+)/;
       const match = targetSourceUrl.match(urlPattern);
       
@@ -22,9 +23,8 @@ export default function DevSandboxPortal() {
       
       setExecutionStatus(`コンポーネント [${repoNode}] から静的アセットをマウント中...`);
 
-      // 画面全体を覆うプレビュー用の描画エリア（コンテナ）を動的に生成
       const viewLayer = document.createElement('div');
-      viewLayer.id = 'game-holder'; // システム側の固定ID要件のため維持
+      viewLayer.id = 'game-holder';
       viewLayer.style.position = 'fixed';
       viewLayer.style.top = '0';
       viewLayer.style.left = '0';
@@ -34,14 +34,12 @@ export default function DevSandboxPortal() {
       viewLayer.style.backgroundColor = '#000';
       document.body.appendChild(viewLayer);
 
-      // 静的配信サービス経由で、指定されたリポジトリのメインロジックを動的に注入
       const injectionScript = document.createElement('script');
       injectionScript.src = `https://cdn.jsdelivr.net/gh/${userNode}/${repoNode}@main/emulator.js`;
       
       injectionScript.onload = () => {
         setExecutionStatus('マウント完了。メインプロセスを開始します。');
         
-        // 外部リポジトリの依存関係パスをグローバル環境にマッピング
         window.EmuJS = {
           EmuJSRoot: `https://cdn.jsdelivr.net/gh/${userNode}/${repoNode}@main/data/`,
           gameUrl: `https://cdn.jsdelivr.net/gh/${userNode}/${repoNode}@main/sf3_rom.dat`,
