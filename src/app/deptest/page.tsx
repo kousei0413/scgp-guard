@@ -15,10 +15,7 @@ export default function UniversalDevSandbox() {
     try {
       setExecutionStatus('URL構造の正規化を開始...');
       
-      // 末尾のスラッシュを自動補完して、ベースURLを確定させる
       const normalizedBase = targetBaseUrl.endsWith('/') ? targetBaseUrl : `${targetBaseUrl}/`;
-      
-      // 内部的にマッピング
       const injectionUrl = `${normalizedBase}emulator.js`;
       
       setExecutionStatus(`ノード [${normalizedBase}] からアセットをマウント中...`);
@@ -40,7 +37,6 @@ export default function UniversalDevSandbox() {
       script.onload = () => {
         setExecutionStatus('マウント完了。メインプロセスを開始します。');
         
-        // ベースURLを基準に、コアファイルとデータの場所を自動マッピング
         (window as any).EmuJS = {
           EmuJSRoot: `${normalizedBase}data/`,
           gameUrl: `${normalizedBase}sf3_rom.dat`,
@@ -81,3 +77,15 @@ export default function UniversalDevSandbox() {
       <button 
         onClick={handleDynamicMount}
         style={{ width: '100%', padding: '15px', background: '#0070f3', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}
+      >
+        環境をマウントして実行
+      </button>
+
+      {executionStatus && (
+        <div style={{ marginTop: '20px', padding: '15px', background: '#f0f7ff', borderLeft: '4px solid #0070f3', color: '#004a99', fontSize: '14px' }}>
+          {executionStatus}
+        </div>
+      )}
+    </div>
+  );
+}
