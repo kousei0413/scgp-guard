@@ -13,11 +13,16 @@ export default function Home() {
         </div>
         
         <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
-          SCGP、<br />
+          SCGP☭<br />
         </h1>
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
           node.jsなどを用いたコードを開発、shadowcompnyaddonのガンパックを開発している組織です
+      
+        </p>
+        <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
+          当サイトではガンパックの他に、多種多様なツールを提供しております
+      
         </p>
         
         <p className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium">
