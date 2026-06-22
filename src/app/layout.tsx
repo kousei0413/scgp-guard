@@ -58,6 +58,7 @@ export default function RootLayout({
             <a href="/DevelopmentProgress" className="p-2 rounded hover:bg-red-500 transition text-sm">DevelopmentProgress</a>
             <a href="/test" className="p-2 rounded hover:bg-red-500 transition text-sm">test</a>
             <div className="text-xs font-bold text-red-300 uppercase tracking-wider mb-2">tools</div>
+            <a href="/test" className="p-2 rounded hover:bg-red-500 transition text-sm">InMemory deployment tool</a>
           </aside>
 
           {/* 📝 メインコンテンツ */}
