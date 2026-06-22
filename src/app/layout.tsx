@@ -57,6 +57,7 @@ export default function RootLayout({
             <a href="/ejses" className="p-2 rounded hover:bg-red-500 transition text-sm">ejses</a>
             <a href="/DevelopmentProgress" className="p-2 rounded hover:bg-red-500 transition text-sm">DevelopmentProgress</a>
             <a href="/test" className="p-2 rounded hover:bg-red-500 transition text-sm">test</a>
+            <div className="text-xs font-bold text-red-300 uppercase tracking-wider mb-2">tools</div>
           </aside>
 
           {/* 📝 メインコンテンツ */}
