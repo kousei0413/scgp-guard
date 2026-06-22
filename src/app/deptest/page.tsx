@@ -160,3 +160,25 @@ export default function UniversalDevSandbox() {
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>環境変数 (ENV)</label>
               <textarea value={envVariables} onChange={(e) => setEnvVariables(e.target.value)} rows={2} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', fontFamily: 'monospace' }} />
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* 実行ボタン */}
+      <button 
+        onClick={handleDynamicDeploy}
+        disabled={isDeploying}
+        style={{ width: '100%', padding: '15px', background: isDeploying ? '#ccc' : '#000', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '16px', fontWeight: 'bold', cursor: isDeploying ? 'not-allowed' : 'pointer' }}
+      >
+        {isDeploying ? 'デプロイプロセス実行中...' : '同一ページ内でデプロイ・実行'}
+      </button>
+
+      {/* ログ出力 */}
+      {executionStatus && (
+        <div style={{ marginTop: '20px', padding: '15px', background: '#1e1e1e', borderRadius: '6px', color: '#39ff14', fontFamily: 'monospace', fontSize: '13px', lineHeight: '1.5', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)' }}>
+          <div>$ {executionStatus}</div>
+        </div>
+      )}
+    </div>
+  );
+}
