@@ -53,10 +53,12 @@ export default function RootLayout({
           {/* 🧭 【共通枠】左サイドバー */}
           <aside className="w-40 bg-red-600 text-yellow-200 p-4 flex flex-col gap-2 border-r border-yellow-200 min-h-[calc(100vh-4rem)]">
             <div className="text-xs font-bold text-red-300 uppercase tracking-wider mb-2">test</div>
+             <a href="/DevelopmentProgress" className="p-2 rounded hover:bg-red-500 transition text-sm">DevelopmentProgress</a>
+             <a href="/test" className="p-2 rounded hover:bg-red-500 transition text-sm">test</a>
+            {/*
             <a href="/whatsramune" className="p-2 rounded hover:bg-red-500 transition text-sm">ramuneとは</a>
             <a href="/ejses" className="p-2 rounded hover:bg-red-500 transition text-sm">ejses</a>
-            <a href="/DevelopmentProgress" className="p-2 rounded hover:bg-red-500 transition text-sm">DevelopmentProgress</a>
-            <a href="/test" className="p-2 rounded hover:bg-red-500 transition text-sm">test</a>
+           */}
             <div className="text-xs font-bold text-red-300 uppercase tracking-wider mb-2">tools</div>
             <a href="/deptest" className="p-2 rounded hover:bg-red-500 transition text-sm">InMemory deployment tool</a>
           </aside>
