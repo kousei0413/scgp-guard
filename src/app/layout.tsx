@@ -28,7 +28,7 @@ export default function RootLayout({
             </a>
 
             {/* ボタングループ */}
-            <div className="h-full py-2 flex items-center">
+           <div className="h-full py-2 flex items-center gap-3">
               <a
                 href="https://discord.gg/2W9gNv8ep9"
                 target="_blank"
