@@ -215,6 +215,48 @@ export default function UniversalDevSandbox() {
         <div style={{ marginTop: '20px', padding: '15px', background: '#1e1e1e', borderRadius: '6px', color: '#39ff14', fontFamily: 'monospace', fontSize: '13px', lineHeight: '1.5', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
           {executionStatus}
         </div>
+
+
+{/* ──────────────────────────────────────────────────────── */}
+      {/* ツール解説セクション（技術的な説得力を持たせるためのドキュメント） */}
+      <div className="mt-12 pt-8 border-t border-gray-200 space-y-6 text-gray-600 text-sm sm:text-base leading-relaxed">
+        <h3 className="text-lg font-bold text-gray-950">
+          💡 このシステム（アーキテクチャ）について
+        </h3>
+        <p>
+          本ツールは、GitHub上にホストされているWebアプリケーションの<strong>「ビルド済み静的成果物（HTML/JS/CSS）」</strong>を動的に走査・取得し、独自のサンドボックス領域（インメモリ）へマウントしてプレビューを実行する軽量開発環境です。
+        </p>
+        <p>
+          外部のホスティングサービスへの再デプロイやDNSの発行を行うことなく、現在のブラウザセッション内だけで完全に独立した実行ランタイムを展開できます。
+        </p>
+
+        <div className="bg-gray-50 p-5 rounded-lg border border-gray-150 space-y-4">
+          <h4 className="font-bold text-gray-950 text-xs tracking-wider uppercase text-blue-600">
+            主な機能とコアテクノロジー
+          </h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-gray-500">
+            <li>
+              <strong className="text-gray-800">ダイナミック・アセット・ルーティング：</strong>
+              ViteやNext.js（SSGエクスポート）等のビルド時に生成されるルート相対パス（先頭スラッシュ付きの資産パス）を正規表現コンパイラでリアルタイムに解析し、jsdelivr CDNの絶対パスへ強制置換。画面のレンダリング崩れや404エラーを完全に防ぎます。
+            </li>
+            <li>
+              <strong className="text-gray-800">インメモリ環境変数インジェクション：</strong>
+              指定された環境変数（`.env` データ）を解析し、あらゆるサードパーティ製スクリプトよりも先に実行される即時関数（IIFE）として、仮想HTMLの最上部へ最優先でインジェクションします。これにより、クライアントサイドでの <code className="bg-gray-200 px-1 rounded text-xs">window.process.env</code> の参照エラーを完全に隔離・シールドします。
+            </li>
+            <li>
+              <strong className="text-gray-800">セキュア・サンドボックス構造：</strong>
+              キャプチャした成果物はBlob URLに変換された上で、完全に隔離された <code className="bg-gray-200 px-1 rounded text-xs">iframe</code> 領域へマウントされます。親ドメイン（当ポータル）のセッションやローカルストレージを汚染しない、安全なデバッグが可能です。
+            </li>
+          </ul>
+        </div>
+
+        <div className="text-xs text-gray-400 space-y-1">
+          <p>※本システムは静的ビルド成果物（GitHub PagesやVercelの成果物フォルダなど）をターゲットに設計されています。</p>
+          <p>※ブラウザ内に完全なLinux環境（Node.jsカーネル）を展開して生ソース（.tsx / .ts）からリアルタイムにコンパイルを行う場合は、別途WebContainers API等の拡張が必要となります。</p>
+        </div>
+      </div>
+      {/*------------------------------------------------------*/}
+      
       )}
     </div>
   );
