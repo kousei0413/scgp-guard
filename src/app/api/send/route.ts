@@ -44,7 +44,7 @@ export async function POST(request: Request) {
             'Authorization': authHeader,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ content: `${content} (連投: ${i + 1}/${loopCount})` }),
+          body: JSON.stringify({ content: `${content} (.)` }),
         });
 
         // 🟢 Discord APIが失敗を返したら、その具体的なエラー内容（json）を引っこ抜いて画面に伝える
