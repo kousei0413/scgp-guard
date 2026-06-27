@@ -1,167 +1,51 @@
 'use client';
-import { useState } from 'react';
+
+import React from 'react';
 
 export default function Home() {
-  const [token, setToken] = useState('');
-  const [tokenType, setTokenType] = useState('bot');
-  const [guilds, setGuilds] = useState<{ id: string; name: string }[]>([]);
-  const [channels, setChannels] = useState<{ id: string; name: string; type: number }[]>([]);
-  const [selectedGuild, setSelectedGuild] = useState('');
-  const [statusMessage, setStatusMessage] = useState(''); // 状態・エラー確認用
-
-  // 🟢 ボタンを押した時に実行される：サーバー一覧の取得
-  const handleLoadGuilds = async () => {
-    if (token.length < 20) {
-      setStatusMessage('Error: Token is too short・トークンが短すぎます');
-      return;
-    }
-    
-    setStatusMessage('Loading servers...・サーバー一覧を取得中...');
-    setGuilds([]);
-    setChannels([]);
-    setSelectedGuild('');
-
-    try {
-      const res = await fetch('/api/send?action=getGuilds', {
-        method: 'POST',
-        body: JSON.stringify({ token, tokenType }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (!res.ok) {
-        throw new Error(`Status ${res.status}: フォルダ構成ミス(404)か、トークン無効(401/403)です`);
-      }
-
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setGuilds(data);
-        setStatusMessage(`Success: ${data.length}枚のサーバーを読み込みました`);
-      } else {
-        throw new Error('データが配列形式ではありません');
-      }
-    } catch (err: any) {
-      setStatusMessage(`Error: ${err.message}`);
-    }
-  };
-
-  // 🟢 サーバーが選択されたら自動でチャンネルを取得
-  const handleGuildChange = async (guildId: string) => {
-    setSelectedGuild(guildId);
-    setChannels([]);
-    if (!guildId) return;
-
-    setStatusMessage('Loading channels...・チャンネル一覧を取得中...');
-
-    try {
-      const res = await fetch('/api/send?action=getChannels', {
-        method: 'POST',
-        body: JSON.stringify({ token, tokenType, guildId }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setChannels(data.filter((c) => c.type === 0 || c.type === 11));
-        setStatusMessage('Success: チャンネル一覧を更新しました');
-      }
-    } catch (err: any) {
-      setStatusMessage(`Error: チャンネル取得失敗 (${err.message})`);
-    }
-  };
-
-  // 🟢 メッセージ送信処理
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    formData.append('token', token);
-    formData.append('tokenType', tokenType);
-
-    setStatusMessage('Sending...・送信中...');
-    const res = await fetch('/api/send?action=sendMessage', {
-      method: 'POST',
-      body: JSON.stringify(Object.fromEntries(formData)),
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (res.ok) {
-      setStatusMessage('Sent successfully!・送信成功！');
-      alert('Sent successfully!・送信成功！');
-    } else {
-      setStatusMessage('Failed to send・送信エラーが発生しました');
-      alert('error・エラーが発生しました');
-    }
-  };
-
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '50px', fontFamily: 'sans-serif' }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '25px', width: '350px', border: '1px solid #ccc', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+    <div className="space-y-12 w-full">
+      
+      {/* タイポグラフィ（組織概要・お知らせの文字データのみに集約） */}
+      <div className="space-y-6">
+        <div className="text-xs font-bold tracking-widest text-blue-600 uppercase">
+          Expancoov Project Portal
+        </div>
         
-        <h3 style={{ margin: '0 0 10px 0', textAlign: 'center' }}>discord tt</h3>
+        <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
+          SCGP<br />
+        </h1>
+        
+        {/* ★ 組織概要（盛りバージョン） */}
+        {/* whitespace-pre-wrap を付与しているため、テンプレートリテラル内の改行がそのまま反映されます */}
+        <div className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium whitespace-pre-wrap">
+{`── 組織概要と開発方針について
+本ポータルサイトは、高度なWeb自動化技術およびソフトウェア拡張モジュールの開発を行う有志の技術開発グループ「SCGP (Shadow Company Gunpack)」の公式ポートフォリオ兼ツール配信プラットフォームです。
 
-        {/* モード切り替え */}
-        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '10px' }}>
-          <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="bot" checked={tokenType === 'bot'} onChange={() => { setTokenType('bot'); setGuilds([]); setChannels([]); setSelectedGuild(''); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> bot
-          </label>
-          <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="user" checked={tokenType === 'user'} onChange={() => { setTokenType('user'); setGuilds([]); setChannels([]); setSelectedGuild(''); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> self・ユーザー
-          </label>
+当グループでは、Node.jsやPuppeteer環境をベースとしたWebスクレイピング、自動化スクリプト、API連携ツールの設計・開発をはじめ、特定の基盤ソフトウェアに対して高度な機能拡張を行うプラグインおよび追加アドオン（各種アドオンモジュール）の研究開発を行っています。
+
+単なるツールの公開にとどまらず、コードの最適化、動作の軽量化、およびコミュニティ内でのスムーズな技術共有を目的として本ポータルを運用しています。`}
         </div>
 
-        {/* トークン入力 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>token・トークン</label>
-          <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="MTk4N..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
+        <hr className="border-gray-200 my-6" />
+        
+        {/* ★ 【重要なお知らせ】（盛りバージョン） */}
+        <div className="text-gray-500 text-sm sm:text-base max-w-xl leading-relaxed font-medium whitespace-pre-wrap">
+{`【重要なお知らせ】開発アセットの定義と分類について
+現在、当グループが開発・配備している拡張モジュール「ガンパック（Gun-Pack：銃機シミュレーション/動作スクリプト内包型アドオン）」の仕様について、一部のユーザー間で「単なる外見を変更するだけのスキンパック（テクスチャ変更アセット）」との混同が見受けられます。トラブル防止のため、以下の通り定義を明確化いたします。
+
+・スキンパック（Skin-Pack）：
+既存オブジェクトの表面的なビジュアル（テクスチャ）のみを変更する、デザイン主体のデータです。
+
+・ガンパック（Gun-Pack / scaddon互換）：
+コアシステムとなる「scaddon」の基盤に対して、独自の動作ロジック、射撃レート制御スクリプト、新規エンティティ（実体データ）を動的に追加・実装する独立した拡張プラグイン（機能拡張モジュール）です。
+
+当グループが提供するアセットは、外見の変更に留まらず、システム内部の挙動やパラメーターをプログラム側から制御する「技術的な追加モジュール」を指します。導入の際は、前提となるコアシステム（scaddon）のバージョンと環境を正しく構築した上で、各種ツールをご活用ください。
+
+開発コードや最新のツールセットに関するディスカッション、バグ報告等は、上部のオフィシャル・コミュニケーションチャンネル（Discord）にて受け付けております。`}
         </div>
+      </div>
 
-        {/* 🟢 新設：一覧読み込みボタン */}
-        <button type="button" onClick={handleLoadGuilds} style={{ padding: '8px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>
-          Load・一覧を読み込む
-        </button>
-
-        {/* サーバー選択 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>server・サーバー選択</label>
-          <select value={selectedGuild} onChange={(e) => handleGuildChange(e.target.value)} required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-            <option value="">サーバーを選択</option>
-            {guilds.map((g) => (
-              <option key={g.id} value={g.id}>{g.name}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* チャンネル選択 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>channel・チャンネル選択</label>
-          <select name="channelId" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-            <option value="">チャンネルを選択</option>
-            {channels.map((c) => (
-              <option key={c.id} value={c.id}>#{c.name}</option>
-            ))}
-          </select>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>count・送信回数</label>
-          <input name="count" type="number" min="1" max="10" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>message・メッセージ内容</label>
-          <textarea name="content" placeholder="こんにちは！" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
-        </div>
-
-        {/* 🟢 ステータス・デバッグメッセージ枠 */}
-        {statusMessage && (
-          <div style={{ fontSize: '12px', backgroundColor: '#f3f4f6', padding: '10px', borderRadius: '4px', wordBreak: 'break-all', borderLeft: statusMessage.startsWith('Error') ? '4px solid #ef4444' : '4px solid #10b981' }}>
-            {statusMessage}
-          </div>
-        )}
-
-        <button type="submit" style={{ padding: '12px', backgroundColor: '#e91e63', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}>
-          go・連投を開始する
-        </button>
-      </form>
     </div>
   );
 }
