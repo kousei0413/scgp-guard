@@ -11,8 +11,8 @@ export default function Home() {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    if (res.ok) alert('送信成功！');
-    else alert('エラーが発生しました');
+    if (res.ok) alert('Sent successfully!・送信成功！');
+    else alert('error・エラーが発生しました');
   };
 
   return (
