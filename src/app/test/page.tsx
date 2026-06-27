@@ -33,17 +33,17 @@ export default function Home() {
 
         {/* 🟢 肝心の入力枠（アナ）たち */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>トークン</label>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>token・トークン</label>
           <input name="token" type="password" placeholder="MTk4N..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>チャンネルID</label>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>cannel ID・チャンネルID</label>
           <input name="channelId" type="text" placeholder="1234567890..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>メッセージ内容</label>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>message・メッセージ内容</label>
           <textarea name="content" placeholder="こんにちは！" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', minHeight: '8px', resize: 'vertical' }} />
         </div>
 
