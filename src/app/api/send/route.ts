@@ -3,18 +3,17 @@ import { NextResponse } from 'next/server';
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(request: Request) {
-  // URLの?action=の後ろの文字を取得する
   const { searchParams } = new URL(request.url);
   const action = searchParams.get('action');
 
   const body = await request.json();
-  const { token, guildId, channelId, count, content } = body;
+  const { token, tokenType, guildId, channelId, count, content } = body;
 
-  // 今回は安全な公式Botでの運用を前提としてプレフィックスを固定
-  const authHeader = `Bot ${token}`;
+  // 🟢 モードの選択によって認証ヘッダーを切り替える
+  const authHeader = tokenType === 'bot' ? `Bot ${token}` : token;
 
   try {
-    // 🟢 アクション1: 所属サーバー一覧の取得
+    // 1. 所属サーバー一覧の取得
     if (action === 'getGuilds') {
       const res = await fetch('https://discord.com/api/v10/users/@me/guilds', {
         headers: { 'Authorization': authHeader },
@@ -24,7 +23,7 @@ export async function POST(request: Request) {
       return NextResponse.json(data);
     }
 
-    // 🟢 アクション2: サーバー内のチャンネル一覧の取得
+    // 2. サーバー内のチャンネル一覧の取得
     if (action === 'getChannels') {
       const res = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
         headers: { 'Authorization': authHeader },
@@ -34,7 +33,7 @@ export async function POST(request: Request) {
       return NextResponse.json(data);
     }
 
-    // 🟢 アクション3: 選択されたチャンネルへの連続メッセージ送信
+    // 3. メッセージ送信
     if (action === 'sendMessage') {
       const loopCount = Math.min(parseInt(count) || 1, 10);
 
