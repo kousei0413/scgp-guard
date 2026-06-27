@@ -19,15 +19,15 @@ export default function Home() {
     <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '50px', fontFamily: 'sans-serif' }}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '25px', width: '350px', border: '1px solid #ccc', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         
-        <h3 style={{ margin: '0 0 10px 0', textAlign: 'center' }}>Discord メッセージ送信</h3>
+        <h3 style={{ margin: '0 0 10px 0', textAlign: 'center' }}>go・送信</h3>
 
         {/* 🟢 モード切り替え */}
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '10px' }}>
           <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="bot" defaultChecked style={{ marginRight: '5px' }} /> 公式Bot
+            <input type="radio" name="tokenType" value="bot" defaultChecked style={{ marginRight: '5px' }} /> bot・公式Bot
           </label>
           <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="user" style={{ marginRight: '5px' }} /> ユーザー(セルボ)
+            <input type="radio" name="tokenType" value="user" style={{ marginRight: '5px' }} /> self・ユーザー(セルボ)
           </label>
         </div>
 
