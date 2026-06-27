@@ -42,13 +42,20 @@ export default function Home() {
           <input name="channelId" type="text" placeholder="1234567890..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
+        {/* 🟢 追加：送信回数（count）の入力枠 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>message・メッセージ内容</label>
-          <textarea name="content" placeholder="こんにちは！" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', minHeight: '8px', resize: 'vertical' }} />
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>count・送信回数</label>
+          <input name="count" type="number" min="1" max="10" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
-        <button type="submit" style={{ padding: '12px', backgroundColor: '#5865F2', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}>
-          go・送信する
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>message・メッセージ内容</label>
+          <textarea name="content" placeholder="こんにちは！" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
+        </div>
+
+        {/* 🟢 ボタンの背景色を連動用に目立つ色（ピンク赤系）に変更していますが、元の青系（#5865F2）に戻したければ自由に変更してください */}
+        <button type="submit" style={{ padding: '12px', backgroundColor: '#e91e63', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}>
+          go・連投を開始する
         </button>
       </form>
     </div>
