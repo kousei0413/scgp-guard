@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { token, tokenType, guildId, channelId, count, content } = body;
 
-  // 🟢 モードの選択によって認証ヘッダーを切り替える
+  // モードの選択によって認証ヘッダーを切り替える
   const authHeader = tokenType === 'bot' ? `Bot ${token}` : token;
 
   try {
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       return NextResponse.json(data);
     }
 
-    // 3. メッセージ送信
+    // 3. 選択されたチャンネルへの連続メッセージ送信
     if (action === 'sendMessage') {
       const loopCount = Math.min(parseInt(count) || 1, 10);
 
@@ -47,7 +47,14 @@ export async function POST(request: Request) {
           body: JSON.stringify({ content: `${content} (連投: ${i + 1}/${loopCount})` }),
         });
 
-        if (!res.ok) return NextResponse.json({ error: `Error at step ${i + 1}` }, { status: res.status });
+        // 🟢 Discord APIが失敗を返したら、その具体的なエラー内容（json）を引っこ抜いて画面に伝える
+        if (!res.ok) {
+          const errorDetail = await res.json().catch(() => ({ message: 'Unknown Discord Error' }));
+          return NextResponse.json({ 
+            error: `ステップ ${i + 1} で失敗: [ステータス ${res.status}] ${errorDetail.message || '理由不明'}` 
+          }, { status: res.status });
+        }
+
         if (i < loopCount - 1) await sleep(1000);
       }
       return NextResponse.json({ success: true });
