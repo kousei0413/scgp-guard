@@ -1,68 +1,95 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function Home() {
   const [token, setToken] = useState('');
-  const [tokenType, setTokenType] = useState('bot'); // 'bot' または 'user'
+  const [tokenType, setTokenType] = useState('bot');
   const [guilds, setGuilds] = useState<{ id: string; name: string }[]>([]);
   const [channels, setChannels] = useState<{ id: string; name: string; type: number }[]>([]);
   const [selectedGuild, setSelectedGuild] = useState('');
+  const [statusMessage, setStatusMessage] = useState(''); // 状態・エラー確認用
 
-  // 🟢 トークンまたはアカウント種別が変わったら、自動でサーバー一覧を取得
-  useEffect(() => {
+  // 🟢 ボタンを押した時に実行される：サーバー一覧の取得
+  const handleLoadGuilds = async () => {
     if (token.length < 20) {
-      setGuilds([]);
+      setStatusMessage('Error: Token is too short・トークンが短すぎます');
       return;
     }
     
-    fetch('/api/send?action=getGuilds', {
-      method: 'POST',
-      body: JSON.stringify({ token, tokenType }),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setGuilds(data);
-        else setGuilds([]);
-      })
-      .catch(() => {
-        setGuilds([]);
-      });
-  }, [token, tokenType]);
+    setStatusMessage('Loading servers...・サーバー一覧を取得中...');
+    setGuilds([]);
+    setChannels([]);
+    setSelectedGuild('');
 
-  // 🟢 サーバーが選択されたら、自動でそのサーバーのチャンネル一覧を取得
+    try {
+      const res = await fetch('/api/send?action=getGuilds', {
+        method: 'POST',
+        body: JSON.stringify({ token, tokenType }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Status ${res.status}: フォルダ構成ミス(404)か、トークン無効(401/403)です`);
+      }
+
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setGuilds(data);
+        setStatusMessage(`Success: ${data.length}枚のサーバーを読み込みました`);
+      } else {
+        throw new Error('データが配列形式ではありません');
+      }
+    } catch (err: any) {
+      setStatusMessage(`Error: ${err.message}`);
+    }
+  };
+
+  // 🟢 サーバーが選択されたら自動でチャンネルを取得
   const handleGuildChange = async (guildId: string) => {
     setSelectedGuild(guildId);
     setChannels([]);
     if (!guildId) return;
 
-    const res = await fetch('/api/send?action=getChannels', {
-      method: 'POST',
-      body: JSON.stringify({ token, tokenType, guildId }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      // type: 0 は通常のテキストチャンネル、type: 11 などはスレッド（必要に応じて調整）
-      setChannels(data.filter((c) => c.type === 0 || c.type === 11));
+    setStatusMessage('Loading channels...・チャンネル一覧を取得中...');
+
+    try {
+      const res = await fetch('/api/send?action=getChannels', {
+        method: 'POST',
+        body: JSON.stringify({ token, tokenType, guildId }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setChannels(data.filter((c) => c.type === 0 || c.type === 11));
+        setStatusMessage('Success: チャンネル一覧を更新しました');
+      }
+    } catch (err: any) {
+      setStatusMessage(`Error: チャンネル取得失敗 (${err.message})`);
     }
   };
 
-  // 🟢 送信処理
+  // 🟢 メッセージ送信処理
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     formData.append('token', token);
     formData.append('tokenType', tokenType);
 
+    setStatusMessage('Sending...・送信中...');
     const res = await fetch('/api/send?action=sendMessage', {
       method: 'POST',
       body: JSON.stringify(Object.fromEntries(formData)),
       headers: { 'Content-Type': 'application/json' },
     });
 
-    if (res.ok) alert('Sent successfully!・送信成功！');
-    else alert('error・エラーが発生しました');
+    if (res.ok) {
+      setStatusMessage('Sent successfully!・送信成功！');
+      alert('Sent successfully!・送信成功！');
+    } else {
+      setStatusMessage('Failed to send・送信エラーが発生しました');
+      alert('error・エラーが発生しました');
+    }
   };
 
   return (
@@ -71,34 +98,39 @@ export default function Home() {
         
         <h3 style={{ margin: '0 0 10px 0', textAlign: 'center' }}>discord tt</h3>
 
-        {/* 🟢 モード切り替え（これの選択状態もAPIに送るように連動） */}
+        {/* モード切り替え */}
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '10px' }}>
           <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="bot" checked={tokenType === 'bot'} onChange={() => { setTokenType('bot'); setGuilds([]); setChannels([]); setSelectedGuild(''); }} style={{ marginRight: '5px' }} /> bot
+            <input type="radio" name="tokenType" value="bot" checked={tokenType === 'bot'} onChange={() => { setTokenType('bot'); setGuilds([]); setChannels([]); setSelectedGuild(''); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> bot
           </label>
           <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="user" checked={tokenType === 'user'} onChange={() => { setTokenType('user'); setGuilds([]); setChannels([]); setSelectedGuild(''); }} style={{ marginRight: '5px' }} /> self・ユーザー
+            <input type="radio" name="tokenType" value="user" checked={tokenType === 'user'} onChange={() => { setTokenType('user'); setGuilds([]); setChannels([]); setSelectedGuild(''); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> self・ユーザー
           </label>
         </div>
 
-        {/* トークン入力枠（状態を管理するために value と onChange をバインド） */}
+        {/* トークン入力 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>token・トークン</label>
           <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="MTk4N..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
-        {/* 🟢 【新設】サーバー選択一覧ボックス */}
+        {/* 🟢 新設：一覧読み込みボタン */}
+        <button type="button" onClick={handleLoadGuilds} style={{ padding: '8px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>
+          Load・一覧を読み込む
+        </button>
+
+        {/* サーバー選択 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>server・サーバー選択</label>
           <select value={selectedGuild} onChange={(e) => handleGuildChange(e.target.value)} required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-            <option value="">サーバーを選択（入力後に自動取得）</option>
+            <option value="">サーバーを選択</option>
             {guilds.map((g) => (
               <option key={g.id} value={g.id}>{g.name}</option>
             ))}
           </select>
         </div>
 
-        {/* 🟢 【新設】チャンネル選択一覧ボックス（古い input タグから置き換え） */}
+        {/* チャンネル選択 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>channel・チャンネル選択</label>
           <select name="channelId" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
@@ -118,6 +150,13 @@ export default function Home() {
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>message・メッセージ内容</label>
           <textarea name="content" placeholder="こんにちは！" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
         </div>
+
+        {/* 🟢 ステータス・デバッグメッセージ枠 */}
+        {statusMessage && (
+          <div style={{ fontSize: '12px', backgroundColor: '#f3f4f6', padding: '10px', borderRadius: '4px', wordBreak: 'break-all', borderLeft: statusMessage.startsWith('Error') ? '4px solid #ef4444' : '4px solid #10b981' }}>
+            {statusMessage}
+          </div>
+        )}
 
         <button type="submit" style={{ padding: '12px', backgroundColor: '#e91e63', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}>
           go・連投を開始する
