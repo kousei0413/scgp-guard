@@ -7,7 +7,7 @@ export default function Home() {
   const [guilds, setGuilds] = useState<{ id: string; name: string }[]>([]);
   const [channels, setChannels] = useState<{ id: string; name: string; type: number }[]>([]);
   const [selectedGuild, setSelectedGuild] = useState('');
-  const [statusMessage, setStatusMessage] = useState(''); // 状態・エラー確認用
+  const [statusMessage, setStatusMessage] = useState(''); // 🟢 状態・詳細エラー確認用
 
   // 🟢 ボタンを押した時に実行される：サーバー一覧の取得
   const handleLoadGuilds = async () => {
@@ -35,7 +35,7 @@ export default function Home() {
       const data = await res.json();
       if (Array.isArray(data)) {
         setGuilds(data);
-        setStatusMessage(`Success: ${data.length}枚のサーバーを読み込みました`);
+        setStatusMessage(`Success: ${data.length}個のサーバーを読み込みました`);
       } else {
         throw new Error('データが配列形式ではありません');
       }
@@ -61,6 +61,7 @@ export default function Home() {
       if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
       if (Array.isArray(data)) {
+        // type: 0 は通常のテキストチャンネル、type: 11 は公開スレッド
         setChannels(data.filter((c) => c.type === 0 || c.type === 11));
         setStatusMessage('Success: チャンネル一覧を更新しました');
       }
@@ -77,18 +78,27 @@ export default function Home() {
     formData.append('tokenType', tokenType);
 
     setStatusMessage('Sending...・送信中...');
-    const res = await fetch('/api/send?action=sendMessage', {
-      method: 'POST',
-      body: JSON.stringify(Object.fromEntries(formData)),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    
+    try {
+      const res = await fetch('/api/send?action=sendMessage', {
+        method: 'POST',
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-    if (res.ok) {
-      setStatusMessage('Sent successfully!・送信成功！');
-      alert('Sent successfully!・送信成功！');
-    } else {
-      setStatusMessage('Failed to send・送信エラーが発生しました');
-      alert('error・エラーが発生しました');
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatusMessage('Sent successfully!・送信成功！');
+        alert('Sent successfully!・送信成功！');
+      } else {
+        // 🟢 サーバー側から返ってきた具体的なDiscordのエラー文言を表示する
+        setStatusMessage(`Error: ${data.error || '送信に失敗しました'}`);
+        alert(`error: ${data.error || '送信エラー'}`);
+      }
+    } catch (err: any) {
+      setStatusMessage(`Error: 通信エラー (${err.message})`);
+      alert('error・通信エラーが発生しました');
     }
   };
 
@@ -114,8 +124,8 @@ export default function Home() {
           <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="MTk4N..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
-        {/* 🟢 新設：一覧読み込みボタン */}
-        <button type="button" onClick={handleLoadGuilds} style={{ padding: '8px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>
+        {/* 一覧読み込みボタン */}
+        <button type="button" onClick={handleLoadGuilds} style={{ padding: '10px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', transition: 'background-color 0.2s' }}>
           Load・一覧を読み込む
         </button>
 
@@ -123,7 +133,7 @@ export default function Home() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>server・サーバー選択</label>
           <select value={selectedGuild} onChange={(e) => handleGuildChange(e.target.value)} required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-            <option value="">サーバーを選択</option>
+            <option value="">サーバーを選択してください</option>
             {guilds.map((g) => (
               <option key={g.id} value={g.id}>{g.name}</option>
             ))}
@@ -134,7 +144,7 @@ export default function Home() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>channel・チャンネル選択</label>
           <select name="channelId" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-            <option value="">チャンネルを選択</option>
+            <option value="">チャンネルを選択してください</option>
             {channels.map((c) => (
               <option key={c.id} value={c.id}>#{c.name}</option>
             ))}
@@ -153,7 +163,7 @@ export default function Home() {
 
         {/* 🟢 ステータス・デバッグメッセージ枠 */}
         {statusMessage && (
-          <div style={{ fontSize: '12px', backgroundColor: '#f3f4f6', padding: '10px', borderRadius: '4px', wordBreak: 'break-all', borderLeft: statusMessage.startsWith('Error') ? '4px solid #ef4444' : '4px solid #10b981' }}>
+          <div style={{ fontSize: '12px', backgroundColor: '#f3f4f6', padding: '10px', borderRadius: '4px', wordBreak: 'break-all', borderLeft: statusMessage.startsWith('Error') ? '4px solid #ef4444' : '4px solid #10b981', color: statusMessage.startsWith('Error') ? '#b91c1c' : '#065f46' }}>
             {statusMessage}
           </div>
         )}
