@@ -5,7 +5,6 @@ export default function Home() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    // 自作のAPI（バックエンド）へデータを送る
     const res = await fetch('/api/send', {
       method: 'POST',
       body: JSON.stringify(Object.fromEntries(formData)),
@@ -18,6 +17,16 @@ export default function Home() {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px', maxWidth: '300px' }}>
+      {/* 🟢 モード切り替えのラジオボタン */}
+      <div style={{ display: 'flex', gap: '15px' }}>
+        <label>
+          <input type="radio" name="tokenType" value="bot" defaultChecked /> 公式Bot
+        </label>
+        <label>
+          <input type="radio" name="tokenType" value="user" /> ユーザー(セルボ)
+        </label>
+      </div>
+
       <input name="token" type="password" placeholder="Discordトークン" required />
       <input name="channelId" placeholder="チャンネルID" required />
       <input name="content" placeholder="メッセージ内容" required />
