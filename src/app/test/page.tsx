@@ -16,21 +16,41 @@ export default function Home() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '20px', maxWidth: '300px' }}>
-      {/* 🟢 モード切り替えのラジオボタン */}
-      <div style={{ display: 'flex', gap: '15px' }}>
-        <label>
-          <input type="radio" name="tokenType" value="bot" defaultChecked /> 公式Bot
-        </label>
-        <label>
-          <input type="radio" name="tokenType" value="user" /> ユーザー(セルボ)
-        </label>
-      </div>
+    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '50px', fontFamily: 'sans-serif' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '25px', width: '350px', border: '1px solid #ccc', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+        
+        <h3 style={{ margin: '0 0 10px 0', textAlign: 'center' }}>Discord メッセージ送信</h3>
 
-      <input name="token" type="password" placeholder="Discordトークン" required />
-      <input name="channelId" placeholder="チャンネルID" required />
-      <input name="content" placeholder="メッセージ内容" required />
-      <button type="submit">送信</button>
-    </form>
+        {/* 🟢 モード切り替え */}
+        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '10px' }}>
+          <label style={{ cursor: 'pointer' }}>
+            <input type="radio" name="tokenType" value="bot" defaultChecked style={{ marginRight: '5px' }} /> 公式Bot
+          </label>
+          <label style={{ cursor: 'pointer' }}>
+            <input type="radio" name="tokenType" value="user" style={{ marginRight: '5px' }} /> ユーザー(セルボ)
+          </label>
+        </div>
+
+        {/* 🟢 肝心の入力枠（アナ）たち */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>トークン</label>
+          <input name="token" type="password" placeholder="MTk4N..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>チャンネルID</label>
+          <input name="channelId" type="text" placeholder="1234567890..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>メッセージ内容</label>
+          <textarea name="content" placeholder="こんにちは！" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', minHeight: '8px', resize: 'vertical' }} />
+        </div>
+
+        <button type="submit" style={{ padding: '12px', backgroundColor: '#5865F2', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}>
+          送信する
+        </button>
+      </form>
+    </div>
   );
 }
