@@ -1,38 +1,60 @@
 import { NextResponse } from 'next/server';
 
-// 指定したミリ秒だけ処理を止めるタイマー関数
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(request: Request) {
-  const { token, tokenType, channelId, count, content } = await request.json();
+  // URLの?action=の後ろの文字を取得する
+  const { searchParams } = new URL(request.url);
+  const action = searchParams.get('action');
 
-  const authHeader = tokenType === 'bot' ? `Bot ${token}` : token;
-  const loopCount = Math.min(parseInt(count) || 1, 10); // 安全のため最大10回に制限
+  const body = await request.json();
+  const { token, guildId, channelId, count, content } = body;
+
+  // 今回は安全な公式Botでの運用を前提としてプレフィックスを固定
+  const authHeader = `Bot ${token}`;
 
   try {
-    for (let i = 0; i < loopCount; i++) {
-      // 実際のDiscord APIへの送信
-      const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Authorization': authHeader,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content: `${content} (連投: ${i + 1}/${loopCount})` }),
+    // 🟢 アクション1: 所属サーバー一覧の取得
+    if (action === 'getGuilds') {
+      const res = await fetch('https://discord.com/api/v10/users/@me/guilds', {
+        headers: { 'Authorization': authHeader },
       });
-
-      if (!res.ok) {
-        // エラー（特に429: レートリミット）が出たらその時点でループを抜ける
-        return NextResponse.json({ error: `Discord API Error at step ${i + 1}` }, { status: res.status });
-      }
-
-      // 🟢 連続送信の命綱：次の送信まで1秒（1000ms）待つ
-      if (i < loopCount - 1) {
-        await sleep(1000);
-      }
+      if (!res.ok) return NextResponse.json({ error: 'Failed to fetch guilds' }, { status: res.status });
+      const data = await res.json();
+      return NextResponse.json(data);
     }
 
-    return NextResponse.json({ success: true });
+    // 🟢 アクション2: サーバー内のチャンネル一覧の取得
+    if (action === 'getChannels') {
+      const res = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
+        headers: { 'Authorization': authHeader },
+      });
+      if (!res.ok) return NextResponse.json({ error: 'Failed to fetch channels' }, { status: res.status });
+      const data = await res.json();
+      return NextResponse.json(data);
+    }
+
+    // 🟢 アクション3: 選択されたチャンネルへの連続メッセージ送信
+    if (action === 'sendMessage') {
+      const loopCount = Math.min(parseInt(count) || 1, 10);
+
+      for (let i = 0; i < loopCount; i++) {
+        const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+          method: 'POST',
+          headers: {
+            'Authorization': authHeader,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content: `${content} (連投: ${i + 1}/${loopCount})` }),
+        });
+
+        if (!res.ok) return NextResponse.json({ error: `Error at step ${i + 1}` }, { status: res.status });
+        if (i < loopCount - 1) await sleep(1000);
+      }
+      return NextResponse.json({ success: true });
+    }
+
+    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error) {
     return NextResponse.json({ error: 'Server Error' }, { status: 500 });
   }
