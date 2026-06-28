@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
     // 3. 選択されたチャンネルへの連続メッセージ送信
     if (action === 'sendMessage') {
-      const loopCount = Math.min(parseInt(count) || 1, 10);
+      const loopCount = Math.min(parseInt(count) || 1, 999999999999999999999999999999999);
 
       for (let i = 0; i < loopCount; i++) {
         const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
