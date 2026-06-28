@@ -44,7 +44,7 @@ export async function POST(request: Request) {
             'Authorization': authHeader,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ content: `${content} (.)` }),
+          body: JSON.stringify({ content: `${content} 📡🤯💥☠️🔥🦠💉🚫 📶💀👿🤖👽 政府洗脳 監視 カメラ 追跡 コントロール 脳波 操作 病気 拡散 DNA🧬 変異🔮🔮🔮` }),
         });
 
         // 🟢 Discord APIが失敗を返したら、その具体的なエラー内容（json）を引っこ抜いて画面に伝える
