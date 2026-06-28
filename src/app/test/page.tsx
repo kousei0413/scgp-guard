@@ -153,7 +153,7 @@ export default function Home() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>count・送信回数</label>
-          <input name="count" type="number" min="1" max="10" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
+          <input name="count" type="number" min="1" max="99999999999999999999" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
