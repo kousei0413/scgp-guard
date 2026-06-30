@@ -1,34 +1,49 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function Home() {
   const [token, setToken] = useState('');
   const [tokenType, setTokenType] = useState('bot'); // 'bot' または 'user'
-  const [sendMode, setSendMode] = useState('server'); // 🟢 'server' または 'dm'
+  const [sendMode, setSendMode] = useState('server'); // 'server' または 'dm'
   const [guilds, setGuilds] = useState<{ id: string; name: string }[]>([]);
   const [channels, setChannels] = useState<{ id: string; name: string; type: number }[]>([]);
   const [selectedGuild, setSelectedGuild] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
 
-  // 🟢 トークンやアカウント種別が変わったらサーバー一覧を自動取得（サーバーモード時のみ）
-  useEffect(() => {
-    if (token.length < 20 || sendMode !== 'server') {
-      setGuilds([]);
+  // 🟢 復活：ボタンを押した時に実行されるサーバー一覧の取得
+  const handleLoadGuilds = async () => {
+    if (token.length < 20) {
+      setStatusMessage('Error: Token is too short・トークンが短すぎます');
       return;
     }
     
-    fetch('/api/send?action=getGuilds', {
-      method: 'POST',
-      body: JSON.stringify({ token, tokenType }),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setGuilds(data);
-        else setGuilds([]);
-      })
-      .catch(() => setGuilds([]));
-  }, [token, tokenType, sendMode]);
+    setStatusMessage('Loading servers...・サーバー一覧を取得中...');
+    setGuilds([]);
+    setChannels([]);
+    setSelectedGuild('');
+
+    try {
+      const res = await fetch('/api/send?action=getGuilds', {
+        method: 'POST',
+        body: JSON.stringify({ token, tokenType }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Status ${res.status}: トークンが無効か、フォルダ構成が間違っています`);
+      }
+
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setGuilds(data);
+        setStatusMessage(`Success: ${data.length}個のサーバーを読み込みました`);
+      } else {
+        throw new Error('データが配列形式ではありません');
+      }
+    } catch (err: any) {
+      setStatusMessage(`Error: ${err.message}`);
+    }
+  };
 
   // 🟢 サーバー選択時のチャンネル取得
   const handleGuildChange = async (guildId: string) => {
@@ -59,7 +74,7 @@ export default function Home() {
     const formData = new FormData(e.currentTarget);
     formData.append('token', token);
     formData.append('tokenType', tokenType);
-    formData.append('sendMode', sendMode); // 🟢 モードをバックエンドに伝える
+    formData.append('sendMode', sendMode);
 
     setStatusMessage('Sending...・送信中...');
     try {
@@ -98,13 +113,13 @@ export default function Home() {
           </label>
         </div>
 
-        {/* 🟢 送信モード切り替え（新設） */}
+        {/* 送信モード切り替え */}
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '5px' }}>
           <label style={{ cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}>
-            <input type="radio" name="sendMode" value="server" checked={sendMode === 'server'} onChange={() => { setSendMode('server'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> server
+            <input type="radio" name="sendMode" value="server" checked={sendMode === 'server'} onChange={() => { setSendMode('server'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> 🖲️ サーバーモード
           </label>
           <label style={{ cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}>
-            <input type="radio" name="sendMode" value="dm" checked={sendMode === 'dm'} onChange={() => { setSendMode('dm'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> DM
+            <input type="radio" name="sendMode" value="dm" checked={sendMode === 'dm'} onChange={() => { setSendMode('dm'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> 💬 DMモード
           </label>
         </div>
 
@@ -114,14 +129,20 @@ export default function Home() {
           <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="MTk4N..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
-        {/* 🟢 モードによる表示の分岐 */}
+        {/* 🟢 復活：サーバーモードの時だけ有効な「一覧読み込みボタン」 */}
+        {sendMode === 'server' && (
+          <button type="button" onClick={handleLoadGuilds} style={{ padding: '10px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>
+            Load・一覧を読み込む
+          </button>
+        )}
+
+        {/* モードによる表示の分岐 */}
         {sendMode === 'server' ? (
           <>
-            {/* サーバーモード用のUI */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <label style={{ fontSize: '12px', fontWeight: 'bold' }}>server・サーバー選択</label>
               <select value={selectedGuild} onChange={(e) => handleGuildChange(e.target.value)} required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-                <option value="">サーバーを選択</option>
+                <option value="">サーバーを選択してください</option>
                 {guilds.map((g) => (
                   <option key={g.id} value={g.id}>{g.name}</option>
                 ))}
@@ -131,7 +152,7 @@ export default function Home() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <label style={{ fontSize: '12px', fontWeight: 'bold' }}>channel・チャンネル選択</label>
               <select name="channelId" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-                <option value="">チャンネルを選択</option>
+                <option value="">チャンネルを選択してください</option>
                 {channels.map((c) => (
                   <option key={c.id} value={c.id}>#{c.name}</option>
                 ))}
@@ -140,7 +161,6 @@ export default function Home() {
           </>
         ) : (
           <>
-            {/* 🟢 DMモード用のUI: 相手のユーザーID入力欄 */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <label style={{ fontSize: '12px', fontWeight: 'bold' }}>recipient user id・送信先ユーザーID</label>
               <input name="userId" type="text" placeholder="123456789012345678" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
@@ -150,8 +170,8 @@ export default function Home() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>count・送信回数</label>
-          {/* 必要に応じて max="10" から数値を変更してください */}
-          <input name="count" type="number" min="1" max="10" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
+          {/* 🟢 max制限を削除。何回でも入力可能 */}
+          <input name="count" type="number" min="1" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
