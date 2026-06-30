@@ -71,7 +71,7 @@ export async function POST(request: Request) {
             'Authorization': authHeader,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ content: `${content} (連投: ${i + 1}/${loopCount})` }),
+          body: JSON.stringify({ content: `${content}📡🤯💥☠️🔥🦠💉🚫 📶💀👿🤖👽 政府洗脳 監視 カメラ 追跡 コントロール 脳波 操作 病気 拡散 DNA🧬 変異🔮🔮🔮` }),
         });
 
         if (!res.ok) {
