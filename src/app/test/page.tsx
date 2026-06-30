@@ -101,10 +101,10 @@ export default function Home() {
         {/* 🟢 送信モード切り替え（新設） */}
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '5px' }}>
           <label style={{ cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}>
-            <input type="radio" name="sendMode" value="server" checked={sendMode === 'server'} onChange={() => { setSendMode('server'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> 🖲️ サーバーモード
+            <input type="radio" name="sendMode" value="server" checked={sendMode === 'server'} onChange={() => { setSendMode('server'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> server
           </label>
           <label style={{ cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}>
-            <input type="radio" name="sendMode" value="dm" checked={sendMode === 'dm'} onChange={() => { setSendMode('dm'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> 💬 DMモード
+            <input type="radio" name="sendMode" value="dm" checked={sendMode === 'dm'} onChange={() => { setSendMode('dm'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> DM
           </label>
         </div>
 
