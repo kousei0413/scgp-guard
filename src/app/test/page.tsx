@@ -1,67 +1,50 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [token, setToken] = useState('');
-  const [tokenType, setTokenType] = useState('bot');
+  const [tokenType, setTokenType] = useState('bot'); // 'bot' または 'user'
+  const [sendMode, setSendMode] = useState('server'); // 🟢 'server' または 'dm'
   const [guilds, setGuilds] = useState<{ id: string; name: string }[]>([]);
   const [channels, setChannels] = useState<{ id: string; name: string; type: number }[]>([]);
   const [selectedGuild, setSelectedGuild] = useState('');
-  const [statusMessage, setStatusMessage] = useState(''); // 🟢 状態・詳細エラー確認用
+  const [statusMessage, setStatusMessage] = useState('');
 
-  // 🟢 ボタンを押した時に実行される：サーバー一覧の取得
-  const handleLoadGuilds = async () => {
-    if (token.length < 20) {
-      setStatusMessage('Error: Token is too short・トークンが短すぎます');
+  // 🟢 トークンやアカウント種別が変わったらサーバー一覧を自動取得（サーバーモード時のみ）
+  useEffect(() => {
+    if (token.length < 20 || sendMode !== 'server') {
+      setGuilds([]);
       return;
     }
     
-    setStatusMessage('Loading servers...・サーバー一覧を取得中...');
-    setGuilds([]);
-    setChannels([]);
-    setSelectedGuild('');
+    fetch('/api/send?action=getGuilds', {
+      method: 'POST',
+      body: JSON.stringify({ token, tokenType }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setGuilds(data);
+        else setGuilds([]);
+      })
+      .catch(() => setGuilds([]));
+  }, [token, tokenType, sendMode]);
 
-    try {
-      const res = await fetch('/api/send?action=getGuilds', {
-        method: 'POST',
-        body: JSON.stringify({ token, tokenType }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (!res.ok) {
-        throw new Error(`Status ${res.status}: フォルダ構成ミス(404)か、トークン無効(401/403)です`);
-      }
-
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setGuilds(data);
-        setStatusMessage(`Success: ${data.length}個のサーバーを読み込みました`);
-      } else {
-        throw new Error('データが配列形式ではありません');
-      }
-    } catch (err: any) {
-      setStatusMessage(`Error: ${err.message}`);
-    }
-  };
-
-  // 🟢 サーバーが選択されたら自動でチャンネルを取得
+  // 🟢 サーバー選択時のチャンネル取得
   const handleGuildChange = async (guildId: string) => {
     setSelectedGuild(guildId);
     setChannels([]);
     if (!guildId) return;
 
     setStatusMessage('Loading channels...・チャンネル一覧を取得中...');
-
     try {
       const res = await fetch('/api/send?action=getChannels', {
         method: 'POST',
         body: JSON.stringify({ token, tokenType, guildId }),
         headers: { 'Content-Type': 'application/json' },
       });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
       if (Array.isArray(data)) {
-        // type: 0 は通常のテキストチャンネル、type: 11 は公開スレッド
         setChannels(data.filter((c) => c.type === 0 || c.type === 11));
         setStatusMessage('Success: チャンネル一覧を更新しました');
       }
@@ -70,15 +53,15 @@ export default function Home() {
     }
   };
 
-  // 🟢 メッセージ送信処理
+  // 🟢 送信処理
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     formData.append('token', token);
     formData.append('tokenType', tokenType);
+    formData.append('sendMode', sendMode); // 🟢 モードをバックエンドに伝える
 
     setStatusMessage('Sending...・送信中...');
-    
     try {
       const res = await fetch('/api/send?action=sendMessage', {
         method: 'POST',
@@ -87,18 +70,15 @@ export default function Home() {
       });
 
       const data = await res.json();
-
       if (res.ok) {
         setStatusMessage('Sent successfully!・送信成功！');
         alert('Sent successfully!・送信成功！');
       } else {
-        // 🟢 サーバー側から返ってきた具体的なDiscordのエラー文言を表示する
         setStatusMessage(`Error: ${data.error || '送信に失敗しました'}`);
         alert(`error: ${data.error || '送信エラー'}`);
       }
     } catch (err: any) {
       setStatusMessage(`Error: 通信エラー (${err.message})`);
-      alert('error・通信エラーが発生しました');
     }
   };
 
@@ -108,13 +88,23 @@ export default function Home() {
         
         <h3 style={{ margin: '0 0 10px 0', textAlign: 'center' }}>discord tt</h3>
 
-        {/* モード切り替え */}
-        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '10px' }}>
-          <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="bot" checked={tokenType === 'bot'} onChange={() => { setTokenType('bot'); setGuilds([]); setChannels([]); setSelectedGuild(''); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> bot
+        {/* アカウント種別切り替え */}
+        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
+          <label style={{ cursor: 'pointer', fontSize: '14px' }}>
+            <input type="radio" name="tokenType" value="bot" checked={tokenType === 'bot'} onChange={() => setTokenType('bot')} style={{ marginRight: '5px' }} /> bot
           </label>
-          <label style={{ cursor: 'pointer' }}>
-            <input type="radio" name="tokenType" value="user" checked={tokenType === 'user'} onChange={() => { setTokenType('user'); setGuilds([]); setChannels([]); setSelectedGuild(''); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> self・ユーザー
+          <label style={{ cursor: 'pointer', fontSize: '14px' }}>
+            <input type="radio" name="tokenType" value="user" checked={tokenType === 'user'} onChange={() => setTokenType('user')} style={{ marginRight: '5px' }} /> self・ユーザー
+          </label>
+        </div>
+
+        {/* 🟢 送信モード切り替え（新設） */}
+        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '5px' }}>
+          <label style={{ cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}>
+            <input type="radio" name="sendMode" value="server" checked={sendMode === 'server'} onChange={() => { setSendMode('server'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> 🖲️ サーバーモード
+          </label>
+          <label style={{ cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}>
+            <input type="radio" name="sendMode" value="dm" checked={sendMode === 'dm'} onChange={() => { setSendMode('dm'); setStatusMessage(''); }} style={{ marginRight: '5px' }} /> 💬 DMモード
           </label>
         </div>
 
@@ -124,36 +114,44 @@ export default function Home() {
           <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="MTk4N..." required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
-        {/* 一覧読み込みボタン */}
-        <button type="button" onClick={handleLoadGuilds} style={{ padding: '10px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', transition: 'background-color 0.2s' }}>
-          Load・一覧を読み込む
-        </button>
+        {/* 🟢 モードによる表示の分岐 */}
+        {sendMode === 'server' ? (
+          <>
+            {/* サーバーモード用のUI */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>server・サーバー選択</label>
+              <select value={selectedGuild} onChange={(e) => handleGuildChange(e.target.value)} required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
+                <option value="">サーバーを選択</option>
+                {guilds.map((g) => (
+                  <option key={g.id} value={g.id}>{g.name}</option>
+                ))}
+              </select>
+            </div>
 
-        {/* サーバー選択 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>server・サーバー選択</label>
-          <select value={selectedGuild} onChange={(e) => handleGuildChange(e.target.value)} required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-            <option value="">サーバーを選択してください</option>
-            {guilds.map((g) => (
-              <option key={g.id} value={g.id}>{g.name}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* チャンネル選択 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>channel・チャンネル選択</label>
-          <select name="channelId" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
-            <option value="">チャンネルを選択してください</option>
-            {channels.map((c) => (
-              <option key={c.id} value={c.id}>#{c.name}</option>
-            ))}
-          </select>
-        </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>channel・チャンネル選択</label>
+              <select name="channelId" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', backgroundColor: '#fff' }}>
+                <option value="">チャンネルを選択</option>
+                {channels.map((c) => (
+                  <option key={c.id} value={c.id}>#{c.name}</option>
+                ))}
+              </select>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* 🟢 DMモード用のUI: 相手のユーザーID入力欄 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>recipient user id・送信先ユーザーID</label>
+              <input name="userId" type="text" placeholder="123456789012345678" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
+            </div>
+          </>
+        )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <label style={{ fontSize: '12px', fontWeight: 'bold' }}>count・送信回数</label>
-          <input name="count" type="number" min="1" max="99999999999999999999" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
+          {/* 必要に応じて max="10" から数値を変更してください */}
+          <input name="count" type="number" min="1" max="10" defaultValue="3" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px' }} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -161,7 +159,6 @@ export default function Home() {
           <textarea name="content" placeholder="こんにちは！" required style={{ padding: '10px', border: '1px solid #aaa', borderRadius: '4px', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
         </div>
 
-        {/* 🟢 ステータス・デバッグメッセージ枠 */}
         {statusMessage && (
           <div style={{ fontSize: '12px', backgroundColor: '#f3f4f6', padding: '10px', borderRadius: '4px', wordBreak: 'break-all', borderLeft: statusMessage.startsWith('Error') ? '4px solid #ef4444' : '4px solid #10b981', color: statusMessage.startsWith('Error') ? '#b91c1c' : '#065f46' }}>
             {statusMessage}
