@@ -7,9 +7,8 @@ export async function POST(request: Request) {
   const action = searchParams.get('action');
 
   const body = await request.json();
-  const { token, tokenType, guildId, channelId, count, content } = body;
+  const { token, tokenType, sendMode, guildId, channelId, userId, count, content } = body;
 
-  // モードの選択によって認証ヘッダーを切り替える
   const authHeader = tokenType === 'bot' ? `Bot ${token}` : token;
 
   try {
@@ -33,21 +32,48 @@ export async function POST(request: Request) {
       return NextResponse.json(data);
     }
 
-    // 3. 選択されたチャンネルへの連続メッセージ送信
+    // 3. 連続メッセージ送信処理 (サーバー / DM 両対応)
     if (action === 'sendMessage') {
-      const loopCount = Math.min(parseInt(count) || 1, 99999999999999999999);
+      const loopCount = Math.min(parseInt(count) || 1, 10); // 必要に応じて上限を変更
+      let finalTargetId = channelId;
 
-      for (let i = 0; i < loopCount; i++) {
-        const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+      // 🟢 DMモードが指定されている場合は、先にDM用のチャンネルIDを作成・取得する
+      if (sendMode === 'dm') {
+        if (!userId) {
+          return NextResponse.json({ error: 'ユーザーIDが指定されていません' }, { status: 400 });
+        }
+
+        const dmCreateRes = await fetch('https://discord.com/api/v10/users/@me/channels', {
           method: 'POST',
           headers: {
             'Authorization': authHeader,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ content: `${content} 📡🤯💥☠️🔥🦠💉🚫 📶💀👿🤖👽 政府洗脳 監視 カメラ 追跡 コントロール 脳波 操作 病気 拡散 DNA🧬 変異🔮🔮🔮` }),
+          body: JSON.stringify({ recipient_id: userId }),
         });
 
-        // 🟢 Discord APIが失敗を返したら、その具体的なエラー内容（json）を引っこ抜いて画面に伝える
+        if (!dmCreateRes.ok) {
+          const errorDetail = await dmCreateRes.json().catch(() => ({ message: 'DMの作成権限がありません' }));
+          return NextResponse.json({ 
+            error: `DM部屋の作成に失敗: [ステータス ${dmCreateRes.status}] ${errorDetail.message}` 
+          }, { status: dmCreateRes.status });
+        }
+
+        const dmData = await dmCreateRes.json();
+        finalTargetId = dmData.id; // 送信先ターゲットを生成されたDMの部屋IDに書き換える
+      }
+
+      // 実際の送信ループ（finalTargetId に向けてメッセージを投げる）
+      for (let i = 0; i < loopCount; i++) {
+        const res = await fetch(`https://discord.com/api/v10/channels/${finalTargetId}/messages`, {
+          method: 'POST',
+          headers: {
+            'Authorization': authHeader,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content: `${content} (連投: ${i + 1}/${loopCount})` }),
+        });
+
         if (!res.ok) {
           const errorDetail = await res.json().catch(() => ({ message: 'Unknown Discord Error' }));
           return NextResponse.json({ 
