@@ -34,10 +34,10 @@ export async function POST(request: Request) {
 
     // 3. 連続メッセージ送信処理 (サーバー / DM 両対応)
     if (action === 'sendMessage') {
-      const loopCount = Math.min(parseInt(count) || 1, 10); // 必要に応じて上限を変更
+      // 🟢 制限を解除：送られてきたカウントをそのまま採用する
+      const loopCount = parseInt(count) || 1; 
       let finalTargetId = channelId;
 
-      // 🟢 DMモードが指定されている場合は、先にDM用のチャンネルIDを作成・取得する
       if (sendMode === 'dm') {
         if (!userId) {
           return NextResponse.json({ error: 'ユーザーIDが指定されていません' }, { status: 400 });
@@ -53,17 +53,17 @@ export async function POST(request: Request) {
         });
 
         if (!dmCreateRes.ok) {
-          const errorDetail = await dmCreateRes.json().catch(() => ({ message: 'DMの作成権限がありません' }));
+          const errorDetail = await dmCreateRes.json().catch(() => ({ message: 'DMの作成権限がないか、IDが不正です' }));
           return NextResponse.json({ 
             error: `DM部屋の作成に失敗: [ステータス ${dmCreateRes.status}] ${errorDetail.message}` 
           }, { status: dmCreateRes.status });
         }
 
         const dmData = await dmCreateRes.json();
-        finalTargetId = dmData.id; // 送信先ターゲットを生成されたDMの部屋IDに書き換える
+        finalTargetId = dmData.id;
       }
 
-      // 実際の送信ループ（finalTargetId に向けてメッセージを投げる）
+      // 実際の送信ループ
       for (let i = 0; i < loopCount; i++) {
         const res = await fetch(`https://discord.com/api/v10/channels/${finalTargetId}/messages`, {
           method: 'POST',
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
           }, { status: res.status });
         }
 
-        if (i < loopCount - 1) await sleep(1000);
+        if (i < loopCount - 1) await sleep(1000); // 1秒ウェイト
       }
       return NextResponse.json({ success: true });
     }
